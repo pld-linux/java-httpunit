@@ -1,0 +1,15 @@
+Index: build.xml
+===================================================================
+RCS file: /cvsroot/httpunit/httpunit/build.xml,v
+retrieving revision 1.77
+diff -u -r1.77 build.xml
+--- build.xml	5 Oct 2004 03:45:15 -0000	1.77
++++ build.xml	13 Nov 2004 19:06:13 -0000
+@@ -166,6 +166,7 @@
+          <classpath>
+              <path refid="base.classpath" />
+              <pathelement location="${build.classes}" />
++             <pathelement location="META-INF" />
+              <pathelement location="${test.classes}" />
+          </classpath>
+     </java>

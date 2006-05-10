@@ -1,0 +1,43 @@
+--- build.xml.orig	2004-10-03 10:17:14.000000000 +0300
++++ build.xml	2004-11-13 18:47:27.904846669 +0200
+@@ -51,7 +51,7 @@
+ <target name="check_for_optional_packages">
+     <available property="jsdk.present"     classname="javax.servlet.http.HttpServlet"
+                                            classpathref="base.classpath" />
+-    <available property="javamail.present" classname="javax.mail.internet.MimeMultipart"
++    <available property="javamail.present" classname="javax.mail.MessagingException"
+                                            classpathref="base.classpath" />
+     <available property="jaxp.present"     classname="javax.xml.parsers.DocumentBuilderFactory"
+                                            classpathref="base.classpath" />
+@@ -173,6 +173,13 @@
+ 
+ 
+ <!--  ===================================================================  -->
++<!--  Creates the test jar archive                                         -->
++<!--  ===================================================================  -->
++<target name="testjar" depends="testcompile">
++    <mkdir dir="${lib.dir}" />
++    <jar jarfile="${lib.dir}/${name}-test.jar" basedir="${test.classes}" includes="com/**" />
++</target>
++
+ <!--  Creates the jar archive                                              -->
+ <!--  ===================================================================  -->
+ <target name="jar" depends="compile">
+@@ -191,6 +198,17 @@
+ 
+ 
+ <!--  ===================================================================  -->
++
++<!--  ===================================================================  -->
++<!--  Creates the examples jar archive                                     -->
++<!--  ===================================================================  -->
++<target name="examplesjar" depends="compile-examples">
++    <mkdir dir="${lib.dir}" />
++    <jar jarfile="${lib.dir}/${name}-examples.jar" basedir="${example.classes}" />
++</target>
++
++
++<!--  ===================================================================  -->
+ <!--  Creates the API documentation                                        -->
+ <!--  ===================================================================  -->
+ <target name="javadocs" depends="prepare">

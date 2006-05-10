@@ -1,0 +1,18 @@
+--- src/com/meterware/httpunit/javascript/JavaScript.java.orig	2004-10-03 10:17:12.000000000 +0300
++++ src/com/meterware/httpunit/javascript/JavaScript.java	2004-11-13 18:48:18.546230094 +0200
+@@ -826,10 +826,15 @@
+         static ElementArray newElementArray( Scriptable parent ) {
+             try {
+                 return (ElementArray) Context.getCurrentContext().newObject( parent, "ElementArray" );
++/* PropertyException not thrown here as of Rhino-1.5-R5
+             } catch (PropertyException e) {
+                 throw new RhinoException( e );
++*/
++/* deprecated NotAFunctionException now extends Error
++   and is no longer thrown by Rhino-1.5-R5
+             } catch (NotAFunctionException e) {
+                 throw new RhinoException( e );
++*/
+             } catch (JavaScriptException e) {
+                 throw new RhinoException( e );
+             }
