@@ -14,7 +14,7 @@ Patch2:		%{name}-servlettest.patch
 Patch3:		%{name}-java15.patch
 URL:		http://httpunit.sourceforge.net/
 BuildRequires:	jaf >= 0:1.0.1
-BuildRequires:	jakarta-ant
+BuildRequires:	ant
 BuildRequires:	jakarta-servletapi
 BuildRequires:	javamail >= 0:1.2
 BuildRequires:	jtidy
