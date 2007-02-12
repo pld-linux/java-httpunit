@@ -1,5 +1,5 @@
 Summary:	Automated web site testing toolkit
-Summary(pl):	Zestaw narzêdzi do automatycznego testowania serwisów WWW
+Summary(pl.UTF-8):   Zestaw narzÄ™dzi do automatycznego testowania serwisÃ³w WWW
 Name:		httpunit
 Version:	1.6
 Release:	1
@@ -40,47 +40,47 @@ returned pages either as text, an XML DOM, or containers of forms,
 tables, and links. A companion framework, ServletUnit is included in
 the package.
 
-%description -l pl
-HttpUnit emuluje odpowiednie elementy zachowania przegl±darki w³±cznie
-z wysy³aniem formularzy, JavaScriptem, podstawowym uwierzytelnieniem
+%description -l pl.UTF-8
+HttpUnit emuluje odpowiednie elementy zachowania przeglÄ…darki wÅ‚Ä…cznie
+z wysyÅ‚aniem formularzy, JavaScriptem, podstawowym uwierzytelnieniem
 HTTP, ciasteczkami i automatycznym przekierowywaniem stron oraz
-pozwala testowemu kodowi w Javie sprawdzaæ zwracane strony jako tekst,
-XML DOM lub kontenery formularzy, tabel i odno¶ników. W pakiecie
-za³±czony jest tak¿e towarzysz±cy szkielet - ServletUnit.
+pozwala testowemu kodowi w Javie sprawdzaÄ‡ zwracane strony jako tekst,
+XML DOM lub kontenery formularzy, tabel i odnoÅ›nikÃ³w. W pakiecie
+zaÅ‚Ä…czony jest takÅ¼e towarzyszÄ…cy szkielet - ServletUnit.
 
 %package javadoc
 Summary:	Javadoc for %{name}
-Summary(pl):	Dokumentacja javadoc dla pakietu %{name}
+Summary(pl.UTF-8):   Dokumentacja javadoc dla pakietu %{name}
 Group:		Documentation
 
 %description javadoc
 Javadoc for %{name}.
 
-%description javadoc -l pl
+%description javadoc -l pl.UTF-8
 Dokumentacja javadoc dla pakietu %{name}.
 
 %package manual
 Summary:	Manual for %{name}
-Summary(pl):	Podrêcznik dla pakietu %{name}
+Summary(pl.UTF-8):   PodrÄ™cznik dla pakietu %{name}
 Group:		Development
 
 %description manual
 Documentation for %{name}.
 
-%description manual -l pl
-Podrêcznik dla pakietu %{name}.
+%description manual -l pl.UTF-8
+PodrÄ™cznik dla pakietu %{name}.
 
 %package demo
 Summary:	Demo for %{name}
-Summary(pl):	Pliki demonstracyjne dla pakietu %{name}
+Summary(pl.UTF-8):   Pliki demonstracyjne dla pakietu %{name}
 Group:		Development
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description demo
 Demonstrations and samples for %{name}.
 
-%description demo -l pl
-Pliki demonstracyjne i przyk³ady dla pakietu %{name}.
+%description demo -l pl.UTF-8
+Pliki demonstracyjne i przykÅ‚ady dla pakietu %{name}.
 
 %prep
 %setup -q
