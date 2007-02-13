@@ -1,5 +1,5 @@
 Summary:	Automated web site testing toolkit
-Summary(pl.UTF-8):   Zestaw narzędzi do automatycznego testowania serwisów WWW
+Summary(pl.UTF-8):	Zestaw narzędzi do automatycznego testowania serwisów WWW
 Name:		httpunit
 Version:	1.6
 Release:	1
@@ -50,7 +50,7 @@ załączony jest także towarzyszący szkielet - ServletUnit.
 
 %package javadoc
 Summary:	Javadoc for %{name}
-Summary(pl.UTF-8):   Dokumentacja javadoc dla pakietu %{name}
+Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{name}
 Group:		Documentation
 
 %description javadoc
@@ -61,7 +61,7 @@ Dokumentacja javadoc dla pakietu %{name}.
 
 %package manual
 Summary:	Manual for %{name}
-Summary(pl.UTF-8):   Podręcznik dla pakietu %{name}
+Summary(pl.UTF-8):	Podręcznik dla pakietu %{name}
 Group:		Development
 
 %description manual
@@ -72,7 +72,7 @@ Podręcznik dla pakietu %{name}.
 
 %package demo
 Summary:	Demo for %{name}
-Summary(pl.UTF-8):   Pliki demonstracyjne dla pakietu %{name}
+Summary(pl.UTF-8):	Pliki demonstracyjne dla pakietu %{name}
 Group:		Development
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
