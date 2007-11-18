@@ -1,3 +1,5 @@
+# TODO
+# - disable tests that use network and $DISPLAY
 Summary:	Automated web site testing toolkit
 Summary(pl.UTF-8):	Zestaw narzędzi do automatycznego testowania serwisów WWW
 Name:		httpunit
@@ -18,7 +20,8 @@ BuildRequires:	ant
 BuildRequires:	jakarta-servletapi
 BuildRequires:	javamail >= 0:1.2
 BuildRequires:	jtidy
-BuildRequires:	junit >= 0:3.8
+BuildRequires:	junit >= 3.8
+BuildRequires:	junit < 4.0
 # nekohtml broken
 #BuildRequires:	nekohtml
 BuildRequires:	rhino
@@ -88,9 +91,9 @@ Pliki demonstracyjne i przykłady dla pakietu %{name}.
 %patch1
 %patch2
 %patch3
-%{__unzip} -qd META-INF lib/httpunit.jar "*.dtd" # 1.6 dist zip is borked
+%{__unzip} -qd META-INF lib/httpunit.jar '*.dtd' # 1.6 dist zip is borked
 # remove all binary libs and javadocs
-find . -name "*.jar" -exec rm -f {} \;
+find -name '*.jar' | xargs rm -v
 rm -rf doc/api
 ln -s \
   %{_javadir}/junit.jar \
@@ -102,8 +105,8 @@ ln -s \
   jars
 
 %build
-export CLASSPATH=$(build-classpath jaf javamail)
-ant -Dbuild.compiler=modern -Dbuild.sysclasspath=last \
+export CLASSPATH=$(build-classpath jaf javamail junit)
+%ant -Dbuild.compiler=modern -Dbuild.sysclasspath=last \
   jar testjar examplesjar javadocs test servlettest
 
 %install
