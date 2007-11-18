@@ -15,21 +15,22 @@ Patch1:		%{name}-JavaScript-NotAFunctionException.patch
 Patch2:		%{name}-servlettest.patch
 Patch3:		%{name}-java15.patch
 URL:		http://httpunit.sourceforge.net/
-BuildRequires:	jaf >= 0:1.0.1
+# As of 1.5, requires either nekohtml or jtidy, and prefers nekohtml.
 BuildRequires:	ant
+BuildRequires:	jaf >= 0:1.0.1
 BuildRequires:	jakarta-servletapi
 BuildRequires:	javamail >= 0:1.2
 BuildRequires:	jtidy
-BuildRequires:	junit >= 3.8
 BuildRequires:	junit < 4.0
+BuildRequires:	junit >= 3.8
 # nekohtml broken
 #BuildRequires:	nekohtml
 BuildRequires:	rhino
 BuildRequires:	unzip
 Requires:	jaxp_parser_impl
+Requires:	jtidy
 Requires:	junit >= 0:3.8
-# As of 1.5, requires either nekohtml or jtidy, and prefers nekohtml.
-Requires:	nekohtml
+#Requires:	nekohtml
 Requires:	rhino
 Requires:	servlet23
 BuildArch:	noarch
@@ -113,44 +114,34 @@ export CLASSPATH=$(build-classpath jaf javamail junit)
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_javadir}
-cp -p lib/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-
-# Jar versioning
-cd $RPM_BUILD_ROOT%{_javadir}
-for jar in *-%{version}.jar; do
-	ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`
-done
-cd -
+cp -a lib/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
+ln -s %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 
 # Javadoc
 install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
 
 # Avoid having api in manual
-rm -rf doc/api
-
+rm -rf manual
+cp -a doc manual
+rm -rf manual/api
 # Fix link between manual and javadoc
-ln -sf %{_javadocdir}/%{name}-%{version} doc/api
+ln -sf %{_javadocdir}/%{name}-%{version} manual/api
 
 # Demo
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
-cp -p examples/* $RPM_BUILD_ROOT%{_datadir}/%{name}
-cp -p lib/%{name}-test.jar \
+cp -a examples/* $RPM_BUILD_ROOT%{_datadir}/%{name}
+cp -a lib/%{name}-test.jar \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/%{name}-test-%{version}.jar
-cp -p lib/%{name}-examples.jar \
+cp -a lib/%{name}-examples.jar \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/%{name}-examples-%{version}.jar
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ $1 -eq 0 ]; then
-	rm -f %{_javadocdir}/%{name}
-fi
+ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
 
 %files
 %defattr(644,root,root,755)
@@ -159,10 +150,11 @@ fi
 %files javadoc
 %defattr(644,root,root,755)
 %{_javadocdir}/%{name}-%{version}
+%ghost %{_javadocdir}/%{name}
 
 %files manual
 %defattr(644,root,root,755)
-%doc doc/*
+%doc manual/*
 
 %files demo
 %defattr(644,root,root,755)
