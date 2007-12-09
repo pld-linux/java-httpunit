@@ -1,5 +1,12 @@
 # TODO
 # - disable tests that use network and $DISPLAY
+# NOTE:
+# As of 1.5, requires either nekohtml or jtidy, and prefers nekohtml.
+#
+# Conditional build:
+%bcond_without	jtidy		# jtidy vs nekohtml
+#
+%include	/usr/lib/rpm/macros.java
 Summary:	Automated web site testing toolkit
 Summary(pl.UTF-8):	Zestaw narzędzi do automatycznego testowania serwisów WWW
 Name:		httpunit
@@ -15,24 +22,27 @@ Patch1:		%{name}-JavaScript-NotAFunctionException.patch
 Patch2:		%{name}-servlettest.patch
 Patch3:		%{name}-java15.patch
 URL:		http://httpunit.sourceforge.net/
-# As of 1.5, requires either nekohtml or jtidy, and prefers nekohtml.
 BuildRequires:	ant
-BuildRequires:	jaf >= 0:1.0.1
-BuildRequires:	jakarta-servletapi
+BuildRequires:	jaf >= 1.0.1
 BuildRequires:	javamail >= 0:1.2
-BuildRequires:	jtidy
-BuildRequires:	junit < 4.0
 BuildRequires:	junit >= 3.8
-# nekohtml broken
-#BuildRequires:	nekohtml
 BuildRequires:	rhino
+BuildRequires:	servlet >= 2.3
 BuildRequires:	unzip
+%if %{with jtidy}
+BuildRequires:	jtidy
+%else
+BuildRequires:	nekohtml
+%endif
 Requires:	jaxp_parser_impl
-Requires:	jtidy
 Requires:	junit >= 0:3.8
-#Requires:	nekohtml
 Requires:	rhino
-Requires:	servlet23
+Requires:	servlet >= 2.3
+%if %{with jtidy}
+Requires:	jtidy
+%else
+Requires:	nekohtml
+%endif
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -94,20 +104,12 @@ Pliki demonstracyjne i przykłady dla pakietu %{name}.
 %patch2
 %patch3
 %{__unzip} -qd META-INF lib/httpunit.jar '*.dtd' # 1.6 dist zip is borked
-# remove all binary libs and javadocs
+
 find -name '*.jar' | xargs rm -v
 rm -rf doc/api
-ln -s \
-  %{_javadir}/junit.jar \
-  %{_javadir}/jtidy.jar \
-  %{_javadir}/nekohtml.jar \
-  %{_javadir}/servletapi4.jar \
-  %{_javadir}/js.jar \
-  %{_javadir}/xerces-j2.jar \
-  jars
 
 %build
-export CLASSPATH=$(build-classpath jaf javamail junit)
+export CLASSPATH=$(build-classpath jaf mail junit)
 %ant -Dbuild.compiler=modern -Dbuild.sysclasspath=last \
   jar testjar examplesjar javadocs test servlettest
 
@@ -127,8 +129,6 @@ ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
 rm -rf manual
 cp -a doc manual
 rm -rf manual/api
-# Fix link between manual and javadoc
-ln -sf %{_javadocdir}/%{name}-%{version} manual/api
 
 # Demo
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
