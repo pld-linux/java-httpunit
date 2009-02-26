@@ -24,6 +24,7 @@ Patch3:		%{name}-java15.patch
 URL:		http://httpunit.sourceforge.net/
 BuildRequires:	ant
 BuildRequires:	jaf >= 1.0.1
+BuildRequires:	java-gcj-compat-devel
 BuildRequires:	javamail >= 0:1.2
 BuildRequires:	junit >= 3.8
 BuildRequires:	rhino
@@ -77,7 +78,7 @@ Dokumentacja javadoc dla pakietu %{name}.
 %package manual
 Summary:	Manual for %{name}
 Summary(pl.UTF-8):	Podręcznik dla pakietu %{name}
-Group:		Development
+Group:		Documentation
 
 %description manual
 Documentation for %{name}.
@@ -88,7 +89,7 @@ Podręcznik dla pakietu %{name}.
 %package demo
 Summary:	Demo for %{name}
 Summary(pl.UTF-8):	Pliki demonstracyjne dla pakietu %{name}
-Group:		Development
+Group:		Documentation
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description demo
@@ -103,14 +104,14 @@ Pliki demonstracyjne i przykłady dla pakietu %{name}.
 %patch1
 %patch2
 %patch3
-%{__unzip} -qd META-INF lib/httpunit.jar '*.dtd' # 1.6 dist zip is borked
+%{__unzip} -qd META-INF lib/httpunit.jar '*.dtd' # 1.6 dist zip is borken
 
 find -name '*.jar' | xargs rm -v
 rm -rf doc/api
 
 %build
 export CLASSPATH=$(build-classpath jaf mail junit)
-%ant -Dbuild.compiler=modern -Dbuild.sysclasspath=last \
+%ant -Dbuild.compiler=extJavac -Dbuild.sysclasspath=last \
   jar testjar examplesjar javadocs test servlettest
 
 %install
@@ -131,12 +132,13 @@ cp -a doc manual
 rm -rf manual/api
 
 # Demo
-install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
-cp -a examples/* $RPM_BUILD_ROOT%{_datadir}/%{name}
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_examplesdir}/%{name}
+cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a lib/%{name}-test.jar \
-	$RPM_BUILD_ROOT%{_datadir}/%{name}/%{name}-test-%{version}.jar
+	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/%{name}-test-%{version}.jar
 cp -a lib/%{name}-examples.jar \
-	$RPM_BUILD_ROOT%{_datadir}/%{name}/%{name}-examples-%{version}.jar
+	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/%{name}-examples-%{version}.jar
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -159,4 +161,5 @@ ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
 
 %files demo
 %defattr(644,root,root,755)
-%{_datadir}/%{name}
+%{_examplesdir}/%{name}-%{version}
+%{_examplesdir}/%{name}
