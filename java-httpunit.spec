@@ -1,10 +1,10 @@
 # TODO
-# - disable tests that use network and $DISPLAY
+# - does not build with new servletapi.
 # NOTE:
 # As of 1.5, requires either nekohtml or jtidy, and prefers nekohtml.
 #
 # Conditional build:
-%bcond_without	jtidy		# jtidy vs nekohtml
+%bcond_with	jtidy		# jtidy vs nekohtml
 #
 %include	/usr/lib/rpm/macros.java
 Summary:	Automated web site testing toolkit
@@ -25,25 +25,20 @@ URL:		http://httpunit.sourceforge.net/
 BuildRequires:	ant
 BuildRequires:	jaf >= 1.0.1
 BuildRequires:	java-gcj-compat-devel
+BuildRequires:	java-xerces >= 2.5
 BuildRequires:	javamail >= 0:1.2
+%{?with_jtidy:BuildRequires:	jtidy >= 1.0-0.20000804r7dev}
 BuildRequires:	junit >= 3.8
-BuildRequires:	rhino
-BuildRequires:	servlet >= 2.3
+%{?without_jtidy:BuildRequires:	nekohtml >= 0.9.1}
+BuildRequires:	rhino >= 1.5R4.1
+# BuildRequires:	servlet >= 2.3
 BuildRequires:	unzip
-%if %{with jtidy}
-BuildRequires:	jtidy
-%else
-BuildRequires:	nekohtml
-%endif
-Requires:	jaxp_parser_impl
+Requires:	java-xerces >= 2.5
+%{?with_jtidy:Requires:	jtidy >= 1.0-0.20000804r7dev}
 Requires:	junit >= 0:3.8
-Requires:	rhino
-Requires:	servlet >= 2.3
-%if %{with jtidy}
-Requires:	jtidy
-%else
-Requires:	nekohtml
-%endif
+%{?without_jtidy:Requires:	nekohtml >= 0.9.1}
+Requires:	rhino >= 1.5R4.1
+# Requires:	servlet >= 2.3
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -110,7 +105,14 @@ find -name '*.jar' | xargs rm -v
 rm -rf doc/api
 
 %build
-export CLASSPATH=$(build-classpath jaf mail junit)
+
+ln -s $(find-jar junit) jars/junit.jar
+#ln -s $(find-jar servlet) jars/servlet.jar
+ln -s $(find-jar xerces) jars/xerces.jar
+%{?with_jtidy:ln -s $(find-jar jtidy) jars/Tidy.jar}
+%{?without_jtidy:ln -s $(find-jar nekohtml) jars/nekohtml.jar}
+ln -s $(find-jar js) jars/js.jar
+
 %ant -Dbuild.compiler=extJavac -Dbuild.sysclasspath=last \
   jar testjar examplesjar javadocs test servlettest
 
