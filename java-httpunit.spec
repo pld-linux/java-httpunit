@@ -114,16 +114,16 @@ ln -s $(find-jar xerces) jars/xerces.jar
 %{?without_jtidy:ln -s $(find-jar nekohtml) jars/nekohtml.jar}
 ln -s $(find-jar js) jars/js.jar
 
-%ant -Dbuild.compiler=extJavac \
-	-Dbuild.sysclasspath=last \
+%ant \
+	-Dbuild.compiler=extJavac \
 	jar \
 	testjar \
 	examplesjar \
 	javadocs
 
 %if %{with tests}
-%ant -Dbuild.compiler=extJavac \
-	-Dbuild.sysclasspath=last \
+%ant \
+	-Dbuild.compiler=extJavac \
 	test \
 	servlettest
 %endif
