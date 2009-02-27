@@ -5,6 +5,7 @@
 #
 # Conditional build:
 %bcond_with	jtidy		# jtidy vs nekohtml
+%bcond_with	tests		# perform tests (seems to be broken)
 #
 %include	/usr/lib/rpm/macros.java
 Summary:	Automated web site testing toolkit
@@ -113,8 +114,19 @@ ln -s $(find-jar xerces) jars/xerces.jar
 %{?without_jtidy:ln -s $(find-jar nekohtml) jars/nekohtml.jar}
 ln -s $(find-jar js) jars/js.jar
 
-%ant -Dbuild.compiler=extJavac -Dbuild.sysclasspath=last \
-  jar testjar examplesjar javadocs test servlettest
+%ant -Dbuild.compiler=extJavac \
+	-Dbuild.sysclasspath=last \
+	jar \
+	testjar \
+	examplesjar \
+	javadocs
+
+%if %{with tests}
+%ant -Dbuild.compiler=extJavac \
+	-Dbuild.sysclasspath=last \
+	test \
+	servlettest
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
