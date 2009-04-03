@@ -6,22 +6,31 @@
 # Conditional build:
 %bcond_with	jtidy		# jtidy vs nekohtml
 %bcond_with	tests		# perform tests (seems to be broken)
+%bcond_without	javadoc		# perform tests (seems to be broken)
+#
+%if "%{pld_release}" == "ti"
+%bcond_without	java_sun	# build with gcj
+%else
+%bcond_with	java_sun	# build with java-sun
+%endif
 #
 %include	/usr/lib/rpm/macros.java
+#
+%define		srcname		httpunit
 Summary:	Automated web site testing toolkit
 Summary(pl.UTF-8):	Zestaw narzędzi do automatycznego testowania serwisów WWW
-Name:		httpunit
+Name:		java-httpunit
 Version:	1.6
 Release:	1
 Epoch:		0
 License:	MIT
-Group:		Development
-Source0:	http://dl.sourceforge.net/httpunit/%{name}-%{version}.zip
+Group:		Libraries/Java
+Source0:	http://dl.sourceforge.net/httpunit/%{srcname}-%{version}.zip
 # Source0-md5:	e94b53b9f4d7bdb706e4baac95b6e424
-Patch0:		%{name}.build.patch
-Patch1:		%{name}-JavaScript-NotAFunctionException.patch
-Patch2:		%{name}-servlettest.patch
-Patch3:		%{name}-java15.patch
+Patch0:		%{srcname}.build.patch
+Patch1:		%{srcname}-JavaScript-NotAFunctionException.patch
+Patch2:		%{srcname}-servlettest.patch
+Patch3:		%{srcname}-java15.patch
 URL:		http://httpunit.sourceforge.net/
 BuildRequires:	ant
 BuildRequires:	jaf >= 1.0.1
@@ -34,9 +43,9 @@ BuildRequires:	junit >= 3.8
 BuildRequires:	rhino >= 1.5R4.1
 # BuildRequires:	servlet >= 2.3
 BuildRequires:	unzip
+Requires:	java-junit >= 0:3.8
 Requires:	java-xerces >= 2.5
 %{?with_jtidy:Requires:	jtidy >= 1.0-0.20000804r7dev}
-Requires:	junit >= 0:3.8
 %{?without_jtidy:Requires:	nekohtml >= 0.9.1}
 Requires:	rhino >= 1.5R4.1
 # Requires:	servlet >= 2.3
@@ -95,7 +104,7 @@ Demonstrations and samples for %{name}.
 Pliki demonstracyjne i przykłady dla pakietu %{name}.
 
 %prep
-%setup -q
+%setup -q -n %{srcname}-%{version}
 %patch0 -p0
 %patch1
 %patch2
@@ -115,15 +124,13 @@ ln -s $(find-jar xerces) jars/xerces.jar
 ln -s $(find-jar js) jars/js.jar
 
 %ant \
-	-Dbuild.compiler=extJavac \
 	jar \
 	testjar \
 	examplesjar \
-	javadocs
+	%{?with_javadoc:javadocs}
 
 %if %{with tests}
 %ant \
-	-Dbuild.compiler=extJavac \
 	test \
 	servlettest
 %endif
@@ -132,13 +139,15 @@ ln -s $(find-jar js) jars/js.jar
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_javadir}
-cp -a lib/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-ln -s %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+cp -a lib/%{srcname}.jar $RPM_BUILD_ROOT%{_javadir}/%{srcname}-%{version}.jar
+ln -s %{srcname}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{srcname}.jar
 
+%if %{with javadoc}
 # Javadoc
-install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
+install -d $RPM_BUILD_ROOT%{_javadocdir}/%{srcname}-%{version}
+cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{srcname}-%{version}
+ln -s %{srcname}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{srcname} # ghost symlink
+%endif
 
 # Avoid having api in manual
 rm -rf manual
@@ -149,25 +158,27 @@ rm -rf manual/api
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_examplesdir}/%{name}
 cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a lib/%{name}-test.jar \
-	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/%{name}-test-%{version}.jar
-cp -a lib/%{name}-examples.jar \
-	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/%{name}-examples-%{version}.jar
+cp -a lib/%{srcname}-test.jar \
+	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/%{srcname}-test-%{version}.jar
+cp -a lib/%{srcname}-examples.jar \
+	$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/%{srcname}-examples-%{version}.jar
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post javadoc
-ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
+ln -nfs %{srcname}-%{version} %{_javadocdir}/%{srcname}
 
 %files
 %defattr(644,root,root,755)
 %{_javadir}/*
 
+%if %{with javadoc}
 %files javadoc
 %defattr(644,root,root,755)
-%{_javadocdir}/%{name}-%{version}
-%ghost %{_javadocdir}/%{name}
+%{_javadocdir}/%{srcname}-%{version}
+%ghost %{_javadocdir}/%{srcname}
+%if %{with javadoc}
 
 %files manual
 %defattr(644,root,root,755)
