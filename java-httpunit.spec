@@ -39,14 +39,14 @@ BuildRequires:	java-xerces >= 2.5
 BuildRequires:	javamail >= 0:1.2
 %{?with_jtidy:BuildRequires:	jtidy >= 1.0-0.20000804r7dev}
 BuildRequires:	junit >= 3.8
-%{?without_jtidy:BuildRequires:	nekohtml >= 0.9.1}
+%{!?with_jtidy:BuildRequires:	nekohtml >= 0.9.1}
 BuildRequires:	rhino >= 1.5R4.1
 # BuildRequires:	servlet >= 2.3
 BuildRequires:	unzip
 Requires:	java-junit >= 0:3.8
 Requires:	java-xerces >= 2.5
 %{?with_jtidy:Requires:	jtidy >= 1.0-0.20000804r7dev}
-%{?without_jtidy:Requires:	nekohtml >= 0.9.1}
+%{!?with_jtidy:Requires:	nekohtml >= 0.9.1}
 Requires:	rhino >= 1.5R4.1
 # Requires:	servlet >= 2.3
 BuildArch:	noarch
@@ -120,7 +120,7 @@ ln -s $(find-jar junit) jars/junit.jar
 #ln -s $(find-jar servlet) jars/servlet.jar
 ln -s $(find-jar xerces) jars/xerces.jar
 %{?with_jtidy:ln -s $(find-jar jtidy) jars/Tidy.jar}
-%{?without_jtidy:ln -s $(find-jar nekohtml) jars/nekohtml.jar}
+%{!?with_jtidy:ln -s $(find-jar nekohtml) jars/nekohtml.jar}
 ln -s $(find-jar js) jars/js.jar
 
 %ant \
