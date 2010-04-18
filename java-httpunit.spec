@@ -7,13 +7,7 @@
 %bcond_with	jtidy		# jtidy vs nekohtml
 %bcond_with	tests		# perform tests (seems to be broken)
 %bcond_without	javadoc		# perform tests (seems to be broken)
-#
-%if "%{pld_release}" == "ti"
-%bcond_without	java_sun	# build with gcj
-%else
-%bcond_with	java_sun	# build with java-sun
-%endif
-#
+
 %include	/usr/lib/rpm/macros.java
 #
 %define		srcname		httpunit
@@ -25,30 +19,30 @@ Release:	1
 Epoch:		0
 License:	MIT
 Group:		Libraries/Java
-Source0:	http://dl.sourceforge.net/httpunit/%{srcname}-%{version}.zip
+Source0:	http://downloads.sourceforge.net/httpunit/%{srcname}-%{version}.zip
 # Source0-md5:	e94b53b9f4d7bdb706e4baac95b6e424
 Patch0:		%{srcname}.build.patch
 Patch1:		%{srcname}-JavaScript-NotAFunctionException.patch
 Patch2:		%{srcname}-servlettest.patch
 Patch3:		%{srcname}-java15.patch
 URL:		http://httpunit.sourceforge.net/
+# BuildRequires:	java(servlet) >= 2.3
 BuildRequires:	ant
-BuildRequires:	jaf >= 1.0.1
-BuildRequires:	java-gcj-compat-devel
+BuildRequires:	java(jaf) >= 1.0.1
+BuildRequires:	java(javamail) >= 0:1.2
+BuildRequires:	java-rhino >= 1.5R4.1
 BuildRequires:	java-xerces >= 2.5
-BuildRequires:	javamail >= 0:1.2
+BuildRequires:	jdk
 %{?with_jtidy:BuildRequires:	jtidy >= 1.0-0.20000804r7dev}
 BuildRequires:	junit >= 3.8
 %{!?with_jtidy:BuildRequires:	nekohtml >= 0.9.1}
-BuildRequires:	rhino >= 1.5R4.1
-# BuildRequires:	servlet >= 2.3
 BuildRequires:	unzip
+# Requires:	java(servlet) >= 2.3
 Requires:	java-junit >= 0:3.8
+Requires:	java-rhino >= 1.5R4.1
 Requires:	java-xerces >= 2.5
 %{?with_jtidy:Requires:	jtidy >= 1.0-0.20000804r7dev}
 %{!?with_jtidy:Requires:	nekohtml >= 0.9.1}
-Requires:	rhino >= 1.5R4.1
-# Requires:	servlet >= 2.3
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
