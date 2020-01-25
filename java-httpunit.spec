@@ -8,7 +8,6 @@
 %bcond_with	tests		# perform tests (seems to be broken)
 %bcond_without	javadoc		# perform tests (seems to be broken)
 
-%include	/usr/lib/rpm/macros.java
 #
 %define		srcname		httpunit
 Summary:	Automated web site testing toolkit
