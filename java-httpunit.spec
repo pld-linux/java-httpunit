@@ -98,10 +98,10 @@ Pliki demonstracyjne i przykłady dla pakietu %{name}.
 
 %prep
 %setup -q -n %{srcname}-%{version}
-%patch0 -p0
-%patch1
-%patch2
-%patch3
+%patch -P0 -p0
+%patch -P1
+%patch -P2
+%patch -P3
 %{__unzip} -qd META-INF lib/httpunit.jar '*.dtd' # 1.6 dist zip is borken
 
 find -name '*.jar' | xargs rm -v
